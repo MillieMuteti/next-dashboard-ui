@@ -5,6 +5,7 @@ import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import Link from "next/link";
 import {  lessonsData, role,  } from "@/lib/data";
+import FormModal from "@/components/FormModal";
 
 type Lesson = {
   id: number;
@@ -48,15 +49,12 @@ const LessonListPage = () => {
       
       <td>
         <div className="flex items-center gap-2">
-          <Link href={`/list/teachers/${item.id}`}>
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaSky">
-              <Image src="/edit.png" alt="" height={16} width={16} />
-            </button>
-          </Link>
+         
           {role === "admin" && (
-            <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple">
-              <Image src="/delete.png" alt="" height={16} width={16} />
-            </button>
+           <>
+           <FormModal table="lesson" type="update" data={item}/>
+           <FormModal table="lesson" type="delete" id={item.id}/>
+          </>
           )}
         </div>
       </td>
@@ -77,9 +75,7 @@ const LessonListPage = () => {
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
             {role === "admin" && (
-              <button className="flex items-center justify-center w-8 h-8 bg-lamaYellow rounded-full">
-                <Image src="/plus.png" alt="" width={14} height={14} />
-              </button>
+             <FormModal  table="lesson" type="create"/>
             )}
           </div>
         </div>

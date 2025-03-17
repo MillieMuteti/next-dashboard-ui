@@ -1,3 +1,5 @@
+"use client"
+
 import TableSearch from "@/components/TableSearch";
 import React from "react";
 import Image from "next/image";
@@ -5,6 +7,7 @@ import Pagination from "@/components/Pagination";
 import Table from "@/components/Table";
 import Link from "next/link";
 import { role, teachersData } from "@/lib/data";
+import FormModal from "@/components/FormModal";
 
 type Teacher = {
   id: number;
@@ -56,11 +59,14 @@ const columns = [
 
 const TeacherListPage = () => {
   const renderRows = (item: Teacher) => (
-    <tr key={item.id} className="border-b border-gray-200 even:border-slate-50 text-xs hover:bg-lamaPurpleLight">
+    <tr
+      key={item.id}
+      className="border-b border-gray-200 even:border-slate-50 text-xs hover:bg-lamaPurpleLight"
+    >
       <td className="flex items-center gap-4 p-4">
         <Image
           src={item.photo}
-          alt="" 
+          alt=""
           height={40}
           width={40}
           className="w-10 h-10 rounded-full md:hidden xl:block object-cover"
@@ -79,14 +85,15 @@ const TeacherListPage = () => {
         <div className="flex items-center gap-2">
           <Link href={`/list/teachers/${item.id}`}>
             <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaSky">
-              <Image src="/view.png" alt="" height={16} width={16}/>
+              <Image src="/view.png" alt="" height={16} width={16} />
             </button>
           </Link>
-          { role === "admin" &&(
-             <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple">
-             <Image src="/delete.png" alt="" height={16} width={16}/>
-           </button>)
-          }
+          {role === "admin" && (
+            // <button className="w-7 h-7 flex items-center justify-center rounded-full bg-lamaPurple">
+            //   <Image src="/delete.png" alt="" height={16} width={16} />
+            // </button>
+            <FormModal table="teacher" type="delete" id={item.id}/>
+          )}
         </div>
       </td>
     </tr>
@@ -105,15 +112,19 @@ const TeacherListPage = () => {
             <button className="flex items-center justify-center w-8 h-8 bg-lamaYellow rounded-full">
               <Image src="/sort.png" alt="" width={14} height={14} />
             </button>
-            { role === "admin" && <button className="flex items-center justify-center w-8 h-8 bg-lamaYellow rounded-full">
+            {/* { role === "admin" && 
+            <button className="flex items-center justify-center w-8 h-8 bg-lamaYellow rounded-full">
               <Image src="/plus.png" alt="" width={14} height={14} />
-            </button>}
+            </button>
+            } */}
+            {role === "admin" && 
+            <FormModal table="teacher" type="create" />}
           </div>
         </div>
       </div>
 
       {/* List */}
-      <Table columns={columns} renderRows={renderRows} data={teachersData}/>
+      <Table columns={columns} renderRows={renderRows} data={teachersData} />
 
       {/* Pagination*/}
 
