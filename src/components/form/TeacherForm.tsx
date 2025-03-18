@@ -1,46 +1,131 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { zodResolver } from '@hookform/resolvers/zod';
+import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import InputField from "../InputField";
 
 const schema = z.object({
-  username: z.string()
-  .min(3, { message: 'User name must be atleast 3  characters long!' })
-  .max(20, { message: 'User name must not exceed 20 characters' }),
-  email: z.string().email({message:"Invalid Email Address"}),
-  password: z.string()
-  .min(8, { message: 'User name must be atleast 8 characters long!' }),
-  firstname: z.string().min(1, { message: 'First Name is required' }),
-  lastname: z.string().min(1, { message: 'Last Name is required' }),
-  phone: z.string().min(1, { message: 'phone number is required' }),
-  address: z.string().min(1, { message: 'address is required' }),
-  birthday: z.date({ message: 'First Name is required' }),
-  sex:z.enum(["male", "female"], {message: "sex is required"}),
-  img:z.instanceof(File, {message:"Image is required"}),
+  username: z
+    .string()
+    .min(3, { message: "User name must be atleast 3  characters long!" })
+    .max(20, { message: "User name must not exceed 20 characters" }),
+  email: z.string().email({ message: "Invalid Email Address" }),
+  password: z
+    .string()
+    .min(8, { message: "User name must be atleast 8 characters long!" }),
+  firstname: z.string().min(1, { message: "First Name is required" }),
+  lastname: z.string().min(1, { message: "Last Name is required" }),
+  phone: z.string().min(1, { message: "phone number is required" }),
+  address: z.string().min(1, { message: "address is required" }),
+  bloodtype: z.string().min(1, { message: "bloodtype is required" }),
+  birthday: z.date({ message: "birthday is required" }),
+  sex: z.enum(["male", "female"], { message: "sex is required" }),
+  img: z.instanceof(File, { message: "Image is required" }),
 });
-const TeacherForm = ({ type, data }: { type: "create" | "update"; data?:any } ) => {
 
-    const {
-        register,
-        handleSubmit,
-        formState: { errors },
-      } = useForm({
-        resolver: zodResolver(schema),
-      });
+type Inputs = z.infer<typeof schema>;
+const TeacherForm = ({
+  type,
+  data,
+}: {
+  type: "create" | "update";
+  data?: any;
+}) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<Inputs>({
+    resolver: zodResolver(schema),
+  });
 
-      const onSubmit = handleSubmit(data=>{
-        console.log(data);
-      })
+  const onSubmit = handleSubmit((data) => {
+    console.log(data);
+  });
   return (
     <form className="flex flex-col gap-8" onSubmit={onSubmit}>
-        <h1 className="text-xs text-gray-400 font-medium">Create a new teacher</h1>
-        <span className=" text-xs text-gray-400 font-medium">Authentication Informartion</span>
-        <input type="text" {...register("username")} className="ring-[1.5px] text-gray-300 p-2 rounded-md text-sm"/>
-        {errors.username?.message && <p className="text-xs text-red-400">{errors.username?.message.toString()}</p>}
-        <span className="text-xs text-gray-400 font-medium">Personal Information</span>
-        <button className="bg-blue-400 text-white p-2 rounded-md">{type === "create" ?"Create" : "Update"}</button>
-      
+      <h1 className="text-xs text-gray-400 font-medium">
+        Create a new teacher
+      </h1>
+      <span className=" text-xs text-gray-400 font-medium">
+        Authentication Informartion
+      </span>
+      <div className="flex justify-between flex-wrap gap-4">
+      <InputField
+        label="Username"
+        name="username"
+        defaultValue={data?.username}
+        register={register}
+        error={errors?.username}
+      />
+      <InputField
+        label="Email"
+        name="email"
+        defaultValue={data?.email}
+        register={register}
+        error={errors?.email}
+        type="email"
+      />
+      <InputField
+        label="Password"
+        name="password"
+        type="password"
+        defaultValue={data?.password}
+        register={register}
+        error={errors?.password}
+      />
+
+     
+      </div>
+
+      <span className="text-xs text-gray-400 font-medium">
+        Personal Information
+      </span>
+      <div className="flex justify-between flex-wrap gap-4">
+      <InputField
+        label="Firstname"
+        name="firstname"
+        defaultValue={data?.firstname}
+        register={register}
+        error={errors?.firstname}
+        
+      />
+      <InputField
+        label="Lastname"
+        name="lastname"
+        defaultValue={data?.lastname}
+        register={register}
+        error={errors?.lastname}
+       
+      />
+      <InputField
+        label="Address"
+        name="address"
+        defaultValue={data?.address}
+        register={register}
+        error={errors?.address}
+      />
+      <InputField
+        label="Bloodtype"
+        name="bloodtype"
+        type="bloodtype"
+        defaultValue={data?.bloodtype}
+        register={register}
+        error={errors?.bloodtype}
+      />
+      <InputField
+        label="Birthday"
+        name="birthday"
+        defaultValue={data?.birthday}
+        register={register}
+        error={errors?.birthday}
+        type="date"
+      />
+      </div>
+      <button className="bg-blue-400 text-white p-2 rounded-md">
+        {type === "create" ? "Create" : "Update"}
+      </button>
     </form>
   );
 };
