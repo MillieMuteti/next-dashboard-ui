@@ -1,8 +1,16 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Image from "next/image";
-import { useState } from "react";
-import TeacherForm from "./form/TeacherForm";
+import { JSXElementConstructor, useState } from "react";
+// import TeacherForm from "./form/TeacherForm";
+// import StudentForm from "./form/StudentForm";
+const TeacherForm = dynamic(() => import("./form/TeacherForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
+const StudentForm = dynamic(() => import("./form/StudentForm"), {
+  loading: () => <h1>Loading...</h1>,
+});
 
 const FormModal = ({
   table,
@@ -36,6 +44,13 @@ const FormModal = ({
       : "bg-lamaPurple";
 
   const [open, setOpen] = useState(false);
+  const forms: {
+    [key:string]:(type: "create" | "update", data?:any)=>JSX.Element;
+  }={
+    teacher:(type,data) => <TeacherForm type={type} data={data} />,
+    student:(type,data) => <StudentForm type={type} data={data} />
+
+  };
 
   const Form = () => {
     return type === "delete" && id ? (<form action="" className="p-4 flex flex-col gap-4">
@@ -44,8 +59,10 @@ const FormModal = ({
 
 
     </form>
-    ) : <TeacherForm type="create"/>
+    ) : type === "create" || type ==="update"? (forms[table] (type,data)
+  ): "Form Not Found";
   }
+  
   return (
     <div>
       <button
